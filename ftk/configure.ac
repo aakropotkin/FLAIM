@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.71])
 AC_INIT([FLAIMTK],[1.2],[flaim-users@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([-Wall -Werror])
 AM_PROG_AR
@@ -17,6 +17,7 @@ AC_CONFIG_HEADERS([config.h])
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_INSTALL
+PKG_PROG_PKG_CONFIG
 
 # Checks for optional programs.
 FLM_PROG_TRY_DOXYGEN
@@ -49,9 +50,16 @@ AX_PTHREAD(
    CXXFLAGS="$CXXFLAGS $PTHREAD_CXXFLAGS"])
 
 # Checks for libraries.
-AC_SEARCH_LIBS([initscr], [ncurses])
-AC_CHECK_HEADER([curses.h],,[echo "*** Error: curses.h not found - install curses devel package."; exit 1])
+PKG_CHECK_MODULES([NCURSES], [ncurses],
+    LIBS="$NCURSES_LIBS $LIBS"
+    CFLAGS="$CFLAGS $NCURSES_CFLAGS"
+    CXXFLAGS="$CFXXLAGS $NCURSES_CXXFLAGS",
+    [AC_SEARCH_LIBS([initscr], [ncurses])
+     AC_CHECK_HEADER([curses.h],,[echo "*** Error: curses.h not found - install curses devel package."; exit 1])]
+)
+
 AC_CHECK_LIB([rt], [aio_suspend])
+
 AS_IF([test "x$openssl" = xyes],
   [AC_DEFINE([FLM_OPENSSL], [1], [Define to use openssl])
    AC_CHECK_LIB([ssl], [SSL_new])
