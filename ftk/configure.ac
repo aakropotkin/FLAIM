@@ -51,9 +51,9 @@ AX_PTHREAD(
 
 # Checks for libraries.
 PKG_CHECK_MODULES([NCURSES], [ncurses],
-    LIBS="$NCURSES_LIBS $LIBS"
-    CFLAGS="$CFLAGS $NCURSES_CFLAGS"
-    CXXFLAGS="$CFXXLAGS $NCURSES_CXXFLAGS",
+    [LIBS="$NCURSES_LIBS $LIBS"
+     CFLAGS="$CFLAGS $NCURSES_CFLAGS"
+     CXXFLAGS="$CFXXLAGS $NCURSES_CFLAGS"],
     [AC_SEARCH_LIBS([initscr], [ncurses])
      AC_CHECK_HEADER([curses.h],,[echo "*** Error: curses.h not found - install curses devel package."; exit 1])]
 )
